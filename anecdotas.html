@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparte tu Anécdota</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script>
+        function guardarAnecdota() {
+            const anecdota = document.getElementById('anecdota').value;
+            if (anecdota.trim() === '') {
+                alert('Por favor, escribe una anécdota.');
+                return;
+            }
+
+            let anecdotas = JSON.parse(localStorage.getItem('anecdotas')) || [];
+            anecdotas.push({ contenido: anecdota, fecha: new Date().toLocaleString() });
+            localStorage.setItem('anecdotas', JSON.stringify(anecdotas));
+
+            document.getElementById('anecdota').value = '';
+            mostrarAnecdotas();
+        }
+
+        function mostrarAnecdotas() {
+            const anecdotas = JSON.parse(localStorage.getItem('anecdotas')) || [];
+            const contenedor = document.getElementById('lista-anecdotas');
+            contenedor.innerHTML = '';
+
+            if (anecdotas.length === 0) {
+                contenedor.innerHTML = '<p>No hay anécdotas todavía. Sé el primero en compartir una.</p>';
+            } else {
+                anecdotas.forEach((anecdota, index) => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<p><strong>Anécdota ${index + 1} (${anecdota.fecha}):</strong></p>
+                                     <p>${anecdota.contenido}</p><hr>`;
+                    contenedor.appendChild(div);
+                });
+            }
+        }
+
+        window.onload = mostrarAnecdotas;
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Comparte tu Anécdota</h1>
+    </header>
+
+    <div class="container">
+        <form onsubmit="guardarAnecdota(); return false;">
+            <label for="anecdota">Tu Anécdota:</label>
+            <textarea id="anecdota" name="anecdota" rows="10"></textarea>
+            <button type="submit">Enviar Anécdota</button>
+        </form>
+        <h2>Anécdotas Compartidas</h2>
+        <div id="lista-anecdotas"></div>
+        <button onclick="location.href='index.html'">Volver</button>
+    </div>
+
+    <footer>
+        <p>¡Gracias por compartir tu historia!</p>
+    </footer>
+</body>
+</html>
